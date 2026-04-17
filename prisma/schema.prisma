@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  projects  Project[]
+}
+
+model Project {
+  id                String           @id @default(cuid())
+  userId            String?
+  title             String
+  rawIdea           String
+  targetUser        String?
+  preferredPlatform String?
+  goal              String?
+  skillLevel        String?
+  preferredStack    String?
+  brandTone         String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user              User?            @relation(fields: [userId], references: [id])
+  sections          ProjectSection[]
+  exports           ProjectExport[]
+  aiJobs            AIJob[]
+}
+
+model ProjectSection {
+  id              String    @id @default(cuid())
+  projectId       String
+  sectionType     String
+  title           String
+  summary         String
+  contentJson     Json
+  status          String    @default("idle")
+  version         Int       @default(1)
+  edited          Boolean   @default(false)
+  lastGeneratedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // AI generation metadata
+  generatedByRole String?
+  provider        String?
+  model           String?
+  reviewedByRole  String?
+  critiqueStatus  String?
+  refined         Boolean   @default(false)
+  pipelineVersion String?
+
+  project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@unique([projectId, sectionType])
+}
+
+model ProjectExport {
+  id         String   @id @default(cuid())
+  projectId  String
+  exportType String
+  content    String
+  createdAt  DateTime @default(now())
+
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model AIJob {
+  id            String   @id @default(cuid())
+  projectId     String
+  sectionType   String?
+  jobType       String
+  status        String   @default("pending")
+  provider      String?
+  model         String?
+  role          String?
+  pipelineStep  String?
+  parentJobId   String?
+  inputHash     String?
+  latencyMs     Int?
+  success       Boolean?
+  rawResponse   String?
+  validated     Boolean?
+  retryCount      Int      @default(0)
+  errorMessage    String?
+  pipelineVersion String?
+  inputContext  Json?
+  outputContext Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+}
