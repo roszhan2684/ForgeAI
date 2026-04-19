@@ -155,8 +155,8 @@ export function ScopeSection({ content }: { content: ScopeContent }) {
               {/* Cards */}
               <div style={{ padding: "12px 12px 4px" }}>
                 {col.key === "outOfScope"
-                  ? content.outOfScope.map((item, i) => <OutOfScopeItem key={i} item={item} />)
-                  : (content[col.key] as Feature[]).map((f, i) => (
+                  ? (content.outOfScope ?? []).map((item, i) => <OutOfScopeItem key={i} item={item} />)
+                  : ((content[col.key] ?? []) as Feature[]).map((f, i) => (
                       <FeatureCard key={i} feature={f} accentColor={col.color} accentBg={col.badgeBg} />
                     ))
                 }
@@ -172,7 +172,7 @@ export function ScopeSection({ content }: { content: ScopeContent }) {
       </div>
 
       {/* Risks */}
-      {content.risks.length > 0 && (
+      {(content.risks?.length ?? 0) > 0 && (
         <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 16, padding: "18px 20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <AlertTriangle size={14} color="#d97706" />
@@ -181,7 +181,7 @@ export function ScopeSection({ content }: { content: ScopeContent }) {
             </span>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {content.risks.map((risk, i) => (
+            {(content.risks ?? []).map((risk, i) => (
               <span key={i} style={{
                 fontSize: 12, color: "#92400e", background: "white",
                 border: "1px solid #fde68a", borderRadius: 8,

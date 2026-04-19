@@ -80,8 +80,24 @@ function LayerConnector({ color }: { color: string }) {
   );
 }
 
+function normalizeStack(raw: unknown): StackContent | null {
+  if (!raw || typeof raw !== "object") return null;
+  const obj = raw as Record<string, unknown>;
+  // Direct flat structure
+  if (typeof obj.frontend === "string") return obj as unknown as StackContent;
+  // Gemini sometimes wraps under a nested key — find the first object value that has "frontend"
+  for (const val of Object.values(obj)) {
+    if (val && typeof val === "object" && typeof (val as Record<string, unknown>).frontend === "string") {
+      return val as unknown as StackContent;
+    }
+  }
+  return obj as unknown as StackContent;
+}
+
 export function StackSection({ content }: { content: StackContent }) {
-  if (!content) return null;
+  const normalized = normalizeStack(content);
+  if (!normalized) return null;
+  const c = normalized;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
@@ -112,7 +128,7 @@ export function StackSection({ content }: { content: StackContent }) {
                     key={node.key}
                     icon={node.icon}
                     label={node.label}
-                    value={String(content[node.key] ?? "—")}
+                    value={String(c[node.key] ?? "—")}
                     color={layer.color}
                     bg="white"
                   />
@@ -127,7 +143,7 @@ export function StackSection({ content }: { content: StackContent }) {
       </div>
 
       {/* Tradeoffs */}
-      {content.tradeoffs?.length > 0 && (
+      {(c.tradeoffs?.length ?? 0) > 0 && (
         <div style={{ background: "white", border: "1px solid var(--forge-border)", borderRadius: 16, padding: "20px 22px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <Scale size={14} color="var(--forge-blue)" />
@@ -136,7 +152,7 @@ export function StackSection({ content }: { content: StackContent }) {
             </span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-            {content.tradeoffs.map((t, i) => (
+            {c.tradeoffs.map((t, i) => (
               <div key={i} style={{
                 display: "flex", gap: 10, alignItems: "flex-start",
                 padding: "9px 12px", background: "var(--forge-surface)",
@@ -154,7 +170,7 @@ export function StackSection({ content }: { content: StackContent }) {
 
       {/* Alternatives */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-        {content.beginnerVersion && (
+        {c.beginnerVersion && (
           <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 16, padding: "18px 20px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}>
               <Zap size={13} color="#16a34a" />
@@ -162,10 +178,10 @@ export function StackSection({ content }: { content: StackContent }) {
                 Beginner Stack
               </span>
             </div>
-            <p style={{ fontSize: 13.5, color: "#166534", lineHeight: 1.6 }}>{content.beginnerVersion}</p>
+            <p style={{ fontSize: 13.5, color: "#166534", lineHeight: 1.6 }}>{c.beginnerVersion}</p>
           </div>
         )}
-        {content.scalableVersion && (
+        {c.scalableVersion && (
           <div style={{ background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 16, padding: "18px 20px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}>
               <Scale size={13} color="var(--forge-blue)" />
@@ -173,7 +189,7 @@ export function StackSection({ content }: { content: StackContent }) {
                 Scalable Stack
               </span>
             </div>
-            <p style={{ fontSize: 13.5, color: "#1e40af", lineHeight: 1.6 }}>{content.scalableVersion}</p>
+            <p style={{ fontSize: 13.5, color: "#1e40af", lineHeight: 1.6 }}>{c.scalableVersion}</p>
           </div>
         )}
       </div>

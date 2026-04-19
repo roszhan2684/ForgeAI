@@ -48,11 +48,11 @@ export const personasSchema = z.object({
 });
 
 export const scopeSchema = z.object({
-  mvpFeatures: z.array(featureSchema),
-  niceToHaveFeatures: z.array(featureSchema),
-  futureFeatures: z.array(featureSchema),
-  outOfScope: z.array(z.string()),
-  risks: z.array(z.string()),
+  mvpFeatures: z.array(featureSchema).optional().default([]),
+  niceToHaveFeatures: z.array(featureSchema).optional().default([]),
+  futureFeatures: z.array(featureSchema).optional().default([]),
+  outOfScope: z.array(z.string()).optional().default([]),
+  risks: z.array(z.string()).optional().default([]),
 });
 
 export const flowsSchema = z.object({
@@ -78,15 +78,15 @@ export const wireframesSchema = z.object({
 });
 
 export const stackSchema = z.object({
-  frontend: z.string(),
-  backend: z.string(),
-  database: z.string(),
-  auth: z.string(),
-  infra: z.string(),
-  analytics: z.string(),
-  tradeoffs: z.array(z.string()),
-  beginnerVersion: z.string(),
-  scalableVersion: z.string(),
+  frontend: z.string().optional().default(""),
+  backend: z.string().optional().default(""),
+  database: z.string().optional().default(""),
+  auth: z.string().optional().default(""),
+  infra: z.string().optional().default(""),
+  analytics: z.string().optional().default(""),
+  tradeoffs: z.array(z.string()).optional().default([]),
+  beginnerVersion: z.string().optional().default(""),
+  scalableVersion: z.string().optional().default(""),
 });
 
 export const launchSchema = z.object({
