@@ -115,6 +115,7 @@ function buildGraph(steps: FlowStep[], color: string): { nodes: Node[]; edges: E
 
 export function FlowsSection({ content }: { content: FlowsContent }) {
   const [active, setActive] = useState<typeof FLOWS[number]["key"]>("primaryFlow");
+  if (!content) return null;
   const flow = FLOWS.find(f => f.key === active)!;
   const steps = content[active] ?? [];
   const { nodes, edges } = useMemo(() => buildGraph(steps, flow.color), [steps, flow.color]);
@@ -180,9 +181,9 @@ export function FlowsSection({ content }: { content: FlowsContent }) {
       )}
 
       {/* Edge cases + empty states */}
-      {(content.edgeCases.length > 0 || content.emptyStates.length > 0) && (
+      {((content.edgeCases?.length ?? 0) > 0 || (content.emptyStates?.length ?? 0) > 0) && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-          {content.edgeCases.length > 0 && (
+          {(content.edgeCases?.length ?? 0) > 0 && (
             <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 16, padding: "18px 20px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
                 <AlertCircle size={13} color="#d97706" />
@@ -198,7 +199,7 @@ export function FlowsSection({ content }: { content: FlowsContent }) {
               </div>
             </div>
           )}
-          {content.emptyStates.length > 0 && (
+          {(content.emptyStates?.length ?? 0) > 0 && (
             <div style={{ background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 16, padding: "18px 20px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
                 <Monitor size={13} color="#16a34a" />

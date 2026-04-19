@@ -157,6 +157,7 @@ function ScreenFrame({ screen }: { screen: Screen }) {
 
 export function WireframesSection({ content }: { content: WireframesContent }) {
   const [active, setActive] = useState(0);
+  if (!content?.screens?.length) return null;
   const screen = content.screens[active];
   if (!screen) return null;
 

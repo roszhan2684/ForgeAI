@@ -107,6 +107,7 @@ function OutOfScopeItem({ item }: { item: string }) {
 }
 
 export function ScopeSection({ content }: { content: ScopeContent }) {
+  if (!content) return null;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* Kanban board */}

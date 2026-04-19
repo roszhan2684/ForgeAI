@@ -4,6 +4,7 @@ import { OverviewContent } from "@/types/project";
 import { Sparkles, Target, Lightbulb, Users, TrendingUp, Zap, BarChart2 } from "lucide-react";
 
 export function OverviewSection({ content }: { content: OverviewContent }) {
+  if (!content) return null;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
 
@@ -20,7 +21,7 @@ export function OverviewSection({ content }: { content: OverviewContent }) {
           <span style={{ fontSize: 11, fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.1em", alignSelf: "center" }}>
             Name suggestions
           </span>
-          {content.productNameSuggestions.map(name => (
+          {(content.productNameSuggestions ?? []).map(name => (
             <span key={name} style={{
               padding: "5px 14px",
               background: "rgba(255,255,255,0.1)",
@@ -110,7 +111,7 @@ export function OverviewSection({ content }: { content: OverviewContent }) {
           </span>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-          {content.successMetrics.map((metric, i) => (
+          {(content.successMetrics ?? []).map((metric, i) => (
             <div key={i} style={{
               display: "flex", alignItems: "center", gap: 8,
               background: "var(--forge-surface)", border: "1px solid var(--forge-border)",

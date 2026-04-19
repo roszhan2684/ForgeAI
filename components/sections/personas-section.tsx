@@ -42,6 +42,7 @@ function ChipGroup({ label, items, color, bg }: { label: string; items: string[]
 }
 
 export function PersonasSection({ content }: { content: PersonasContent }) {
+  if (!content?.personas?.length) return null;
   const cols = content.personas.length === 1 ? 1 : 2;
 
   return (

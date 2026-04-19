@@ -81,6 +81,7 @@ function LayerConnector({ color }: { color: string }) {
 }
 
 export function StackSection({ content }: { content: StackContent }) {
+  if (!content) return null;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
 
@@ -111,7 +112,7 @@ export function StackSection({ content }: { content: StackContent }) {
                     key={node.key}
                     icon={node.icon}
                     label={node.label}
-                    value={String(content[node.key])}
+                    value={String(content[node.key] ?? "—")}
                     color={layer.color}
                     bg="white"
                   />

@@ -59,6 +59,7 @@ function MilestoneItem({ text, color }: { text: string; color: string }) {
 }
 
 export function LaunchSection({ content }: { content: LaunchContent }) {
+  if (!content) return null;
   const phasedItems = [
     content.validationPlan ?? [],
     [...(content.betaUserProfile ? [content.betaUserProfile] : []), ...(content.feedbackLoop ?? [])],

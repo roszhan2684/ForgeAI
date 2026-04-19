@@ -8,6 +8,7 @@ interface Props {
 }
 
 export function LandingCopySection({ content }: Props) {
+  if (!content) return null;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hero copy preview */}
