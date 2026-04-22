@@ -58,7 +58,7 @@ function fadeUp(delay = 0) {
     initial: { opacity: 0, y: 24 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true },
-    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay },
+    transition: { duration: 0.55, delay },
   };
 }
 
@@ -123,7 +123,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 48 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           style={{ position: "relative", zIndex: 1, marginTop: 64, width: "100%", maxWidth: 960 }}
         >
           <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "16px 16px 0", boxShadow: "0 32px 80px rgba(0,0,0,0.5)" }}>
