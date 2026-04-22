@@ -7,12 +7,19 @@ import {
   SECTION_TASK_MAP,
 } from "./types";
 import { resolveProvider } from "./providers";
+import { mockProvider } from "./providers/mock";
 import { buildPrompt } from "./prompts";
 import { routeTask, ROLE_LABELS } from "./router";
 import { validateSection } from "./validators";
 import { ANTHROPIC_MODEL } from "./providers/anthropic";
+import { GEMINI_MODEL } from "./providers/gemini";
 
 const MAX_RETRIES = 2;
+
+function isQuotaError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return msg.includes("429") || msg.includes("quota") || msg.includes("Too Many Requests") || msg.includes("credit balance");
+}
 
 export async function orchestrate<T = unknown>(
   input: OrchestratorInput
@@ -29,62 +36,58 @@ export async function orchestrate<T = unknown>(
   // Build prompts
   const { systemPrompt, userPrompt } = buildPrompt(task, projectContext);
 
-  // Execute with retry on validation failure
+  // Execute with retry on validation failure, fallback to mock on quota errors
   let lastError: Error | null = null;
   let rawOutput = "";
+  const providers = [provider, mockProvider];
 
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const result = await provider.generate<unknown>({
-        systemPrompt,
-        userPrompt:
-          attempt > 0
-            ? `${userPrompt}\n\nIMPORTANT: Your previous response failed JSON validation. Return ONLY valid JSON, no markdown, no extra text.`
-            : userPrompt,
-        responseFormat: "json",
-        temperature: route.temperature,
-        maxTokens: route.maxTokens,
-      });
+  for (const activeProvider of providers) {
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const result = await activeProvider.generate<unknown>({
+          systemPrompt,
+          userPrompt:
+            attempt > 0
+              ? `${userPrompt}\n\nIMPORTANT: Your previous response failed JSON validation. Return ONLY valid JSON, no markdown, no extra text.`
+              : userPrompt,
+          responseFormat: "json",
+          temperature: route.temperature,
+          maxTokens: route.maxTokens,
+        });
 
-      rawOutput = typeof result === "string" ? result : JSON.stringify(result);
+        rawOutput = typeof result === "string" ? result : JSON.stringify(result);
 
-      // Validate if we have a section type
-      if (sectionType) {
-        const validation = validateSection<T>(sectionType, result);
-        if (!validation.success) {
-          if (attempt < MAX_RETRIES) {
-            lastError = new Error(
-              `Validation failed: ${validation.errors.join(", ")}`
-            );
-            continue;
+        if (sectionType) {
+          const validation = validateSection<T>(sectionType, result);
+          if (!validation.success) {
+            if (attempt < MAX_RETRIES) {
+              lastError = new Error(`Validation failed: ${validation.errors.join(", ")}`);
+              continue;
+            }
+            console.warn(`[FORGE Orchestrator] Section ${sectionType} validation failed:`, validation.errors);
+            return {
+              content: result as T,
+              metadata: buildMetadata(activeProvider.name, route, start, false),
+              rawOutput,
+            };
           }
-          // On final attempt: log but still return the best-effort result
-          console.warn(
-            `[FORGE Orchestrator] Section ${sectionType} validation failed after ${MAX_RETRIES} retries:`,
-            validation.errors
-          );
-          // Return unvalidated but usable content
           return {
-            content: result as T,
-            metadata: buildMetadata(provider.name, route, start, false),
+            content: validation.data as T,
+            metadata: buildMetadata(activeProvider.name, route, start, true),
             rawOutput,
           };
         }
+
         return {
-          content: validation.data as T,
-          metadata: buildMetadata(provider.name, route, start, true),
+          content: result as T,
+          metadata: buildMetadata(activeProvider.name, route, start, true),
           rawOutput,
         };
+      } catch (err) {
+        lastError = err instanceof Error ? err : new Error(String(err));
+        if (isQuotaError(err)) break; // Skip retries, move to next provider
+        if (attempt < MAX_RETRIES) continue;
       }
-
-      return {
-        content: result as T,
-        metadata: buildMetadata(provider.name, route, start, true),
-        rawOutput,
-      };
-    } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err));
-      if (attempt < MAX_RETRIES) continue;
     }
   }
 
@@ -110,7 +113,7 @@ function buildMetadata(
   return {
     generatedByRole: route.role,
     provider: providerName as AIGenerationMetadata["provider"],
-    model: providerName === "anthropic" ? ANTHROPIC_MODEL : "unknown",
+    model: providerName === "anthropic" ? ANTHROPIC_MODEL : providerName === "gemini" ? GEMINI_MODEL : providerName,
     refined: false,
     pipelineVersion: "v1",
     latencyMs: Date.now() - startMs,

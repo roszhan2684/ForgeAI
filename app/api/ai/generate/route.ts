@@ -39,7 +39,7 @@ const requestSchema = z.object({
     .object({
       review: z.boolean().optional(),
       refine: z.boolean().optional(),
-      providerPreference: z.enum(["anthropic", "openai", "mock"]).optional(),
+      providerPreference: z.enum(["anthropic", "openai", "gemini", "mock"]).optional(),
     })
     .optional(),
 });

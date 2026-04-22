@@ -50,29 +50,43 @@ export default function NewProjectPage() {
 
     setIsSubmitting(true);
 
-    const id = `proj-${Date.now()}`;
-    const now = new Date().toISOString();
-    const project = {
-      id,
-      title: form.title.trim() || generateTitle(form.rawIdea),
-      rawIdea: form.rawIdea,
-      targetUser: form.targetUser || null,
-      preferredPlatform: form.preferredPlatform?.toLowerCase() || null,
-      goal: form.goal?.toLowerCase().replace(" ", "-") || null,
-      skillLevel: form.skillLevel?.toLowerCase() || null,
-      preferredStack: form.preferredStack || null,
-      brandTone: form.brandTone || null,
-      createdAt: now,
-      updatedAt: now,
-    };
+    try {
+      const res = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: form.title.trim() || undefined,
+          rawIdea: form.rawIdea,
+          targetUser: form.targetUser || undefined,
+          preferredPlatform: form.preferredPlatform?.toLowerCase() || undefined,
+          goal: form.goal?.toLowerCase().replace(" ", "-") || undefined,
+          skillLevel: form.skillLevel?.toLowerCase() || undefined,
+          preferredStack: form.preferredStack || undefined,
+          brandTone: form.brandTone || undefined,
+        }),
+      });
 
-    addProject(project);
-    router.push(`/projects/${id}`);
-  };
+      if (!res.ok) throw new Error("Failed to create project");
 
-  const generateTitle = (idea: string) => {
-    const words = idea.split(" ").slice(0, 5).join(" ");
-    return words.length > 30 ? words.slice(0, 30) + "..." : words;
+      const { project } = await res.json();
+      addProject({
+        id: project.id,
+        title: project.title,
+        rawIdea: project.rawIdea,
+        targetUser: project.targetUser ?? null,
+        preferredPlatform: project.preferredPlatform ?? null,
+        goal: project.goal ?? null,
+        skillLevel: project.skillLevel ?? null,
+        preferredStack: project.preferredStack ?? null,
+        brandTone: project.brandTone ?? null,
+        createdAt: project.createdAt,
+        updatedAt: project.updatedAt,
+      });
+      router.push(`/projects/${project.id}`);
+    } catch (err) {
+      console.error("Failed to create project:", err);
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -98,11 +112,9 @@ export default function NewProjectPage() {
           </span>
         </Link>
         <div style={{ flex: 1 }} />
-        <Link href="/dashboard">
-          <button className="forge-btn-secondary" style={{ padding: "6px 14px", fontSize: 13 }}>
-            <ArrowLeft size={13} />
-            Dashboard
-          </button>
+        <Link href="/dashboard" className="forge-btn-secondary" style={{ padding: "6px 14px", fontSize: 13 }}>
+          <ArrowLeft size={13} />
+          Dashboard
         </Link>
       </nav>
 

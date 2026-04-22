@@ -8,7 +8,7 @@ export type AIRole =
   | "critic"
   | "refiner";
 
-export type AIProviderName = "anthropic" | "openai" | "mock";
+export type AIProviderName = "anthropic" | "openai" | "gemini" | "mock";
 
 export type AITaskType =
   | "generate_overview"

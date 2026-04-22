@@ -136,6 +136,32 @@ export default function ProjectWorkspacePage() {
   }, [searchParams]);
 
   const project = useProjectStore((s) => s.getProject(projectId));
+
+  // Silently sync project to DB on mount — handles old localStorage-only projects
+  useEffect(() => {
+    if (!project) return;
+    fetch(`/api/projects/${projectId}`)
+      .then((res) => {
+        if (res.status === 404) {
+          fetch("/api/projects", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: projectId,
+              title: project.title,
+              rawIdea: project.rawIdea,
+              targetUser: project.targetUser ?? undefined,
+              preferredPlatform: project.preferredPlatform ?? undefined,
+              goal: project.goal ?? undefined,
+              skillLevel: project.skillLevel ?? undefined,
+              preferredStack: project.preferredStack ?? undefined,
+              brandTone: project.brandTone ?? undefined,
+            }),
+          }).catch(() => {});
+        }
+      })
+      .catch(() => {});
+  }, [projectId, project]);
   const getSection = useProjectStore((s) => s.getSection);
   const updateSection = useProjectStore((s) => s.updateSection);
   const setSectionStatus = useProjectStore((s) => s.setSectionStatus);

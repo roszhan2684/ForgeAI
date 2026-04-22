@@ -2,479 +2,155 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { MarketingNav } from "@/components/layout/marketing-nav";
+import { MarketingFooter } from "@/components/layout/marketing-footer";
 import {
-  ArrowRight,
-  Layers,
-  Users,
-  GitBranch,
-  Zap,
-  BarChart2,
-  FileText,
-  Code2,
-  Sparkles,
-  CheckCircle2,
-  ChevronRight,
+  Layers, Users, GitBranch, FileText, Code2, Sparkles,
+  CheckCircle2, ArrowRight, Zap, Brain, Rocket, Star, Play,
 } from "lucide-react";
 
-const features = [
+const FEATURES = [
+  { icon: Sparkles, color: "#2563eb", bg: "#eff6ff", title: "Product Overview", desc: "Crystallize your idea into a clear problem statement, value proposition, and success metrics." },
+  { icon: Users, color: "#7c3aed", bg: "#faf5ff", title: "User Personas", desc: "AI-crafted personas with goals, frustrations, behaviors, and primary use cases." },
+  { icon: CheckCircle2, color: "#059669", bg: "#ecfdf5", title: "Feature Scope", desc: "Ruthlessly prioritized MVP, nice-to-haves, and a future roadmap — with clear rationale." },
+  { icon: GitBranch, color: "#d97706", bg: "#fffbeb", title: "User Flows", desc: "Step-by-step primary, onboarding, and core action flows with edge cases mapped out." },
+  { icon: FileText, color: "#dc2626", bg: "#fef2f2", title: "Screen Wireframes", desc: "Every screen defined with layout notes, key components, CTAs, and UX guidance." },
+  { icon: Layers, color: "#0891b2", bg: "#ecfeff", title: "Tech Stack", desc: "Tailored frontend, backend, database, auth, and infra recommendations for your skill level." },
+  { icon: Rocket, color: "#7c3aed", bg: "#faf5ff", title: "Launch Plan", desc: "Validation approach, beta acquisition strategy, and a 30-day go-to-market action plan." },
+  { icon: Code2, color: "#059669", bg: "#ecfdf5", title: "Build Mode", desc: "Implementation-ready tickets, API plan, data model, and a Claude Code prompt to scaffold the MVP." },
+];
+
+const HOW_IT_WORKS = [
+  { icon: FileText, color: "#2563eb", bg: "#eff6ff", step: "01", title: "Describe your idea", desc: "Type your product idea in plain English — a sentence is enough. Tell us your target user and skill level." },
+  { icon: Brain, color: "#7c3aed", bg: "#faf5ff", step: "02", title: "AI builds your plan", desc: "FORGE AI's specialized agents generate 8 structured sections: personas, flows, wireframes, stack, and more." },
+  { icon: Rocket, color: "#059669", bg: "#ecfdf5", step: "03", title: "Export & build", desc: "Download your full plan as Markdown or copy the Claude Code prompt to start scaffolding immediately." },
+];
+
+const TESTIMONIALS = [
+  { quote: "I went from 'vague idea' to a complete product spec in under 10 minutes. This is what I used to pay consultants $5k for.", name: "Alex R.", role: "Indie Hacker" },
+  { quote: "The tech stack recommendations alone saved me a week of research. And the Claude Code prompt actually worked on the first try.", name: "Priya S.", role: "Founding Engineer" },
+  { quote: "Finally a tool that understands I'm building, not just planning. The Build Mode output is genuinely usable.", name: "Marcus T.", role: "Solo Founder" },
+];
+
+const PRICING = [
   {
-    icon: Layers,
-    title: "Product Overview",
-    description:
-      "Crystallize your idea into a clear problem statement, value proposition, and success metrics.",
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    name: "Free", price: "$0", period: "forever",
+    desc: "Perfect for exploring your first idea.",
+    features: ["3 projects", "All 8 AI sections", "Export to Markdown", "Gemini AI generation"],
+    cta: "Start free", href: "/projects/new", highlight: false,
   },
   {
-    icon: Users,
-    title: "User Personas",
-    description:
-      "AI-crafted user personas with goals, frustrations, behaviors, and primary use cases.",
-    color: "text-violet-600",
-    bg: "bg-violet-50",
+    name: "Pro", price: "$19", period: "per month",
+    desc: "For builders who ship regularly.",
+    features: ["Unlimited projects", "All 8 AI sections", "Priority generation", "Export to Markdown", "Regenerate any section", "Email support"],
+    cta: "Get Pro", href: "/projects/new", highlight: true, badge: "Most popular",
   },
   {
-    icon: CheckCircle2,
-    title: "Feature Scope",
-    description:
-      "Ruthlessly prioritized MVP, nice-to-haves, and a future roadmap — with clear rationale.",
-    color: "text-emerald-600",
-    bg: "bg-emerald-50",
-  },
-  {
-    icon: GitBranch,
-    title: "User Flows",
-    description:
-      "Step-by-step primary, onboarding, and core action flows with edge cases mapped out.",
-    color: "text-amber-600",
-    bg: "bg-amber-50",
-  },
-  {
-    icon: FileText,
-    title: "Screen Wireframes",
-    description:
-      "Every screen defined with layout notes, key components, CTAs, and UX guidance.",
-    color: "text-rose-600",
-    bg: "bg-rose-50",
-  },
-  {
-    icon: Code2,
-    title: "Build Mode",
-    description:
-      "Tickets, API endpoints, data schema, and a Claude prompt — ready for engineering execution.",
-    color: "text-indigo-600",
-    bg: "bg-indigo-50",
-  },
-  {
-    icon: BarChart2,
-    title: "Launch Plan",
-    description:
-      "Validation strategy, beta user profile, channels, and a 30-day action plan.",
-    color: "text-teal-600",
-    bg: "bg-teal-50",
-  },
-  {
-    icon: Zap,
-    title: "Landing Copy",
-    description:
-      "Market-ready headlines, feature copy, FAQs, and CTAs for your product website.",
-    color: "text-orange-600",
-    bg: "bg-orange-50",
+    name: "Team", price: "$49", period: "per month",
+    desc: "For teams building together.",
+    features: ["Everything in Pro", "Up to 5 team members", "Shared project workspace", "Priority support"],
+    cta: "Contact us", href: "mailto:hello@forgeai.app", highlight: false,
   },
 ];
 
-const workflow = [
-  {
-    step: "01",
-    title: "Drop your idea",
-    description:
-      "Enter a rough product concept — a few sentences is enough. FORGE AI does the rest.",
-  },
-  {
-    step: "02",
-    title: "Generate your plan",
-    description:
-      "AI transforms your idea into a structured product workspace with 8+ planning sections.",
-  },
-  {
-    step: "03",
-    title: "Refine and own it",
-    description:
-      "Edit any section, regenerate individual outputs, and shape the plan to match your vision.",
-  },
-  {
-    step: "04",
-    title: "Build with clarity",
-    description:
-      "Export a Claude Code handoff prompt, markdown doc, or JSON — and start building immediately.",
-  },
-];
+function fadeUp(delay = 0) {
+  return {
+    initial: { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay },
+  };
+}
 
 export default function LandingPage() {
   return (
-    <div style={{ background: "var(--forge-surface)", minHeight: "100vh" }}>
-      {/* Navigation */}
-      <nav
-        style={{
-          background: "rgba(248,248,249,0.9)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid var(--forge-border)",
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            padding: "0 32px",
-            height: 64,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                background: "var(--forge-blue)",
-                borderRadius: 9,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Sparkles size={16} color="white" />
-            </div>
-            <span
-              style={{
-                fontSize: 17,
-                fontWeight: 700,
-                letterSpacing: "-0.03em",
-                color: "var(--forge-text)",
-              }}
-            >
-              FORGE AI
+    <div style={{ background: "white", color: "#0f1117", fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif" }}>
+      <MarketingNav />
+
+      {/* HERO */}
+      <section style={{
+        minHeight: "100vh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        background: "linear-gradient(160deg, #0f1117 0%, #1e1b4b 45%, #1e3a8a 100%)",
+        padding: "120px 24px 80px", textAlign: "center", position: "relative", overflow: "hidden",
+      }}>
+        <div style={{ position: "absolute", top: "15%", left: "10%", width: 400, height: 400, background: "radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%)", borderRadius: "50%", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "10%", right: "8%", width: 500, height: 500, background: "radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%)", borderRadius: "50%", pointerEvents: "none" }} />
+
+        <motion.div {...fadeUp()} style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 14px", background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.35)", borderRadius: 100, marginBottom: 28 }}>
+            <Zap size={12} color="#818cf8" />
+            <span style={{ fontSize: 12, fontWeight: 600, color: "#a5b4fc", letterSpacing: "0.04em" }}>Powered by Gemini AI</span>
+          </div>
+
+          <h1 style={{ fontSize: "clamp(38px, 7vw, 76px)", fontWeight: 900, color: "white", letterSpacing: "-0.045em", lineHeight: 1.05, marginBottom: 24, maxWidth: 860 }}>
+            Turn your idea into a{" "}
+            <span style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+              build-ready product
             </span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Link href="/dashboard">
-              <button className="forge-btn-secondary" style={{ padding: "7px 16px", fontSize: 13 }}>
-                Dashboard
-              </button>
-            </Link>
-            <Link href="/projects/new">
-              <button className="forge-btn-primary" style={{ padding: "7px 16px", fontSize: 13 }}>
-                Start Building
-                <ArrowRight size={14} />
-              </button>
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section
-        style={{
-          padding: "96px 32px 80px",
-          maxWidth: 1200,
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 7,
-              padding: "5px 13px",
-              background: "var(--forge-blue-light)",
-              border: "1px solid #bfdbfe",
-              borderRadius: 20,
-              marginBottom: 32,
-            }}
-          >
-            <Sparkles size={12} color="var(--forge-blue)" />
-            <span
-              style={{ fontSize: 13, fontWeight: 600, color: "var(--forge-blue)" }}
-            >
-              AI-powered product planning workspace
-            </span>
-          </div>
-
-          <h1
-            style={{
-              fontSize: "clamp(40px, 6vw, 68px)",
-              fontWeight: 800,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.08,
-              maxWidth: 780,
-              margin: "0 auto 24px",
-              color: "var(--forge-text)",
-            }}
-          >
-            Turn rough ideas into{" "}
-            <span className="gradient-text">buildable products</span>
+            {" "}in minutes
           </h1>
 
-          <p
-            style={{
-              fontSize: "clamp(16px, 2vw, 19px)",
-              color: "var(--forge-text-muted)",
-              maxWidth: 560,
-              margin: "0 auto 48px",
-              lineHeight: 1.65,
-            }}
-          >
-            FORGE AI transforms your product idea into a structured workspace —
-            complete with personas, scope, flows, wireframes, launch plans, and
-            a build-ready engineering handoff.
+          <p style={{ fontSize: "clamp(16px, 2.5vw, 20px)", color: "rgba(255,255,255,0.6)", lineHeight: 1.65, maxWidth: 600, margin: "0 auto 40px" }}>
+            FORGE AI generates a complete product plan — personas, flows, wireframes, tech stack, and an implementation-ready Build Mode — from a single sentence.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <Link href="/projects/new">
-              <button
-                className="forge-btn-primary"
-                style={{ padding: "12px 28px", fontSize: 15, fontWeight: 700 }}
-              >
-                Start Building Free
-                <ArrowRight size={16} />
-              </button>
+          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link href="/projects/new" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 32px", borderRadius: 12, fontSize: 16, fontWeight: 700,
+              textDecoration: "none", color: "white",
+              background: "linear-gradient(135deg, #2563eb, #7c3aed)",
+              boxShadow: "0 4px 24px rgba(37,99,235,0.4)",
+            }}>
+              <Sparkles size={16} />
+              Start building free
             </Link>
-            <Link href="/projects/demo-focusforge">
-              <button
-                className="forge-btn-secondary"
-                style={{ padding: "12px 28px", fontSize: 15 }}
-              >
-                View Demo Project
-              </button>
-            </Link>
+            <a href="#how-it-works" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: "14px 28px", borderRadius: 12, fontSize: 16, fontWeight: 600,
+              textDecoration: "none", color: "rgba(255,255,255,0.8)",
+              border: "1.5px solid rgba(255,255,255,0.2)", background: "rgba(255,255,255,0.05)",
+            }}>
+              See how it works <ArrowRight size={15} />
+            </a>
           </div>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", marginTop: 20 }}>No credit card required · Free forever plan</p>
         </motion.div>
 
-        {/* Hero preview */}
+        {/* App preview mockup */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          style={{ marginTop: 72 }}
+          initial={{ opacity: 0, y: 48 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          style={{ position: "relative", zIndex: 1, marginTop: 64, width: "100%", maxWidth: 960 }}
         >
-          <div
-            style={{
-              background: "white",
-              borderRadius: 24,
-              border: "1px solid var(--forge-border)",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.08), 0 4px 20px rgba(37,99,235,0.06)",
-              overflow: "hidden",
-              maxWidth: 960,
-              margin: "0 auto",
-            }}
-          >
-            {/* Browser chrome */}
-            <div
-              style={{
-                background: "#f9fafb",
-                borderBottom: "1px solid var(--forge-border)",
-                padding: "12px 20px",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-              }}
-            >
-              <div style={{ display: "flex", gap: 6 }}>
-                {["#ff5f57", "#ffbc2e", "#28c840"].map((c, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: "50%",
-                      background: c,
-                    }}
-                  />
-                ))}
-              </div>
-              <div
-                style={{
-                  flex: 1,
-                  background: "white",
-                  border: "1px solid var(--forge-border)",
-                  borderRadius: 7,
-                  padding: "5px 14px",
-                  fontSize: 12,
-                  color: "#9ca3af",
-                  maxWidth: 340,
-                  margin: "0 auto",
-                }}
-              >
-                forgeai.app/projects/focusforge
-              </div>
+          <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "16px 16px 0", boxShadow: "0 32px 80px rgba(0,0,0,0.5)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+              {["#ef4444","#f59e0b","#10b981"].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.6 }} />)}
+              <div style={{ flex: 1, height: 24, background: "rgba(255,255,255,0.06)", borderRadius: 6, marginLeft: 8 }} />
             </div>
-
-            {/* App preview */}
-            <div style={{ display: "flex", height: 460 }}>
-              {/* Sidebar */}
-              <div
-                style={{
-                  width: 200,
-                  borderRight: "1px solid var(--forge-border)",
-                  background: "white",
-                  padding: "20px 16px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "#9ca3af",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    marginBottom: 12,
-                    paddingLeft: 12,
-                  }}
-                >
-                  FocusForge
-                </div>
-                {[
-                  { label: "Overview", active: true },
-                  { label: "Personas" },
-                  { label: "Feature Scope" },
-                  { label: "User Flows" },
-                  { label: "Wireframes" },
-                  { label: "Tech Stack" },
-                  { label: "Launch Plan" },
-                  { label: "Landing Copy" },
-                  { label: "Build Mode", special: true },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    style={{
-                      padding: "7px 12px",
-                      borderRadius: 9,
-                      fontSize: 13,
-                      fontWeight: item.active ? 600 : 500,
-                      color: item.active
-                        ? "var(--forge-blue)"
-                        : item.special
-                        ? "#7c3aed"
-                        : "#6b7280",
-                      background: item.active
-                        ? "var(--forge-blue-light)"
-                        : "transparent",
-                      marginBottom: 2,
-                    }}
-                  >
-                    {item.label}
-                  </div>
+            <div style={{ borderRadius: "12px 12px 0 0", overflow: "hidden", background: "#f8fafc", height: 340, display: "flex" }}>
+              <div style={{ width: 200, background: "white", borderRight: "1px solid #e5e7eb", padding: "16px 12px", flexShrink: 0 }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 12, paddingLeft: 8 }}>SECTIONS</div>
+                {["Overview","User Personas","Feature Scope","User Flows","Wireframes","Tech Stack","Launch Plan","Landing Copy"].map((s, i) => (
+                  <div key={s} style={{ padding: "8px 10px", borderRadius: 8, marginBottom: 2, fontSize: 13, fontWeight: i === 0 ? 700 : 500, color: i === 0 ? "#2563eb" : "#6b7280", background: i === 0 ? "#eff6ff" : "transparent" }}>{s}</div>
                 ))}
               </div>
-
-              {/* Main content */}
-              <div
-                style={{
-                  flex: 1,
-                  background: "var(--forge-surface)",
-                  padding: 28,
-                  overflowY: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 700,
-                    color: "var(--forge-text)",
-                    marginBottom: 6,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  Product Overview
+              <div style={{ flex: 1, padding: 24 }}>
+                <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+                  <div style={{ height: 22, width: 80, background: "#0f1117", borderRadius: 4 }} />
+                  <div style={{ height: 22, width: 64, background: "#dcfce7", borderRadius: 4 }} />
                 </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: "var(--forge-text-muted)",
-                    marginBottom: 24,
-                  }}
-                >
-                  High-level product definition and strategic framing.
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: 14,
-                  }}
-                >
-                  {[
-                    {
-                      label: "One-Line Summary",
-                      value:
-                        "A student accountability app for finding focused study partners.",
-                    },
-                    {
-                      label: "Target Audience",
-                      value:
-                        "College students who want structure and accountability.",
-                    },
-                    {
-                      label: "Value Proposition",
-                      value:
-                        "Partner matching, session scheduling, and streak-based accountability.",
-                    },
-                    {
-                      label: "Why Now",
-                      value:
-                        "Students increasingly study independently post-pandemic.",
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      style={{
-                        background: "white",
-                        border: "1px solid var(--forge-border)",
-                        borderRadius: 14,
-                        padding: "16px 18px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          color: "#9ca3af",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.07em",
-                          marginBottom: 7,
-                        }}
-                      >
-                        {item.label}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: "var(--forge-text-secondary)",
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {item.value}
-                      </div>
+                <div style={{ height: 28, background: "#0f1117", borderRadius: 6, marginBottom: 8, width: "70%" }} />
+                <div style={{ height: 14, background: "#e5e7eb", borderRadius: 4, marginBottom: 6, width: "90%" }} />
+                <div style={{ height: 14, background: "#e5e7eb", borderRadius: 4, marginBottom: 24, width: "75%" }} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {[1,2,3,4].map(i => (
+                    <div key={i} style={{ background: "white", border: "1px solid #e5e7eb", borderRadius: 12, padding: 14 }}>
+                      <div style={{ height: 12, background: "#bfdbfe", borderRadius: 3, marginBottom: 8, width: "50%" }} />
+                      <div style={{ height: 10, background: "#e5e7eb", borderRadius: 3, width: "80%" }} />
                     </div>
                   ))}
                 </div>
@@ -484,454 +160,189 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* What FORGE generates */}
-      <section style={{ padding: "80px 32px", maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 56 }}>
-          <div className="forge-badge forge-badge-blue" style={{ marginBottom: 16 }}>
-            What gets generated
-          </div>
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 42px)",
-              fontWeight: 800,
-              letterSpacing: "-0.03em",
-              color: "var(--forge-text)",
-              marginBottom: 16,
-            }}
-          >
-            Everything you need to go from idea to execution
-          </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--forge-text-muted)",
-              maxWidth: 520,
-              margin: "0 auto",
-              lineHeight: 1.6,
-            }}
-          >
-            FORGE AI generates 8 structured planning sections from a single idea input —
-            all in seconds.
-          </p>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-            gap: 16,
-          }}
-        >
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
-            >
-              <div
-                className="forge-card"
-                style={{ padding: "24px", height: "100%" }}
-              >
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 12,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: 16,
-                    background: f.bg,
-                  }}
-                  className={f.color}
-                >
-                  <f.icon size={20} />
-                </div>
-                <div
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 700,
-                    color: "var(--forge-text)",
-                    marginBottom: 8,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {f.title}
-                </div>
-                <p
-                  style={{
-                    fontSize: 13.5,
-                    color: "var(--forge-text-muted)",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {f.description}
-                </p>
-              </div>
-            </motion.div>
+      {/* STATS BAR */}
+      <section style={{ background: "#f8fafc", borderTop: "1px solid #e5e7eb", borderBottom: "1px solid #e5e7eb", padding: "20px 24px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "center", alignItems: "center", gap: 48, flexWrap: "wrap" }}>
+          {[["8","AI-generated sections"],["< 2 min","Average generation time"],["100%","Free to start"],["1 idea","Is all you need"]].map(([v, l]) => (
+            <div key={l} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#0f1117", letterSpacing: "-0.04em" }}>{v}</div>
+              <div style={{ fontSize: 12, color: "#9ca3af", fontWeight: 500 }}>{l}</div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* How it works */}
-      <section
-        style={{
-          padding: "80px 32px",
-          background: "white",
-          borderTop: "1px solid var(--forge-border)",
-          borderBottom: "1px solid var(--forge-border)",
-        }}
-      >
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div className="forge-badge forge-badge-blue" style={{ marginBottom: 16 }}>
-              How it works
+      {/* HOW IT WORKS */}
+      <section id="how-it-works" style={{ padding: "100px 24px" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <motion.div {...fadeUp()} style={{ textAlign: "center", marginBottom: 64 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 100, marginBottom: 16 }}>
+              <Brain size={12} color="#16a34a" />
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#16a34a" }}>How it works</span>
             </div>
-            <h2
-              style={{
-                fontSize: "clamp(28px, 4vw, 42px)",
-                fontWeight: 800,
-                letterSpacing: "-0.03em",
-                color: "var(--forge-text)",
-              }}
-            >
-              Idea to execution in four steps
-            </h2>
+            <h2 style={{ fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 800, letterSpacing: "-0.04em", color: "#0f1117", marginBottom: 16 }}>From idea to spec in 3 steps</h2>
+            <p style={{ fontSize: 17, color: "#6b7280", maxWidth: 480, margin: "0 auto" }}>No lengthy forms. No complex setup. Just describe your idea and let FORGE AI do the heavy lifting.</p>
+          </motion.div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginBottom: 64 }}>
+            {HOW_IT_WORKS.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <motion.div key={step.step} {...fadeUp(i * 0.1)} style={{ background: "white", border: "1px solid #e5e7eb", borderRadius: 20, padding: "32px 28px", position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", top: 16, right: 20, fontSize: 52, fontWeight: 900, color: "#f3f4f6", letterSpacing: "-0.04em", lineHeight: 1 }}>{step.step}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: 12, background: step.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+                    <Icon size={20} color={step.color} />
+                  </div>
+                  <h3 style={{ fontSize: 17, fontWeight: 700, color: "#0f1117", marginBottom: 10, letterSpacing: "-0.02em" }}>{step.title}</h3>
+                  <p style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.65 }}>{step.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-              gap: 32,
-            }}
-          >
-            {workflow.map((w, i) => (
-              <motion.div
-                key={w.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "var(--forge-blue)",
-                    letterSpacing: "0.08em",
-                    marginBottom: 12,
-                    fontVariantNumeric: "tabular-nums",
-                  }}
-                >
-                  {w.step}
+          {/* Demo video */}
+          <motion.div {...fadeUp(0.1)} style={{ borderRadius: 20, overflow: "hidden", border: "1px solid #e5e7eb", boxShadow: "0 8px 40px rgba(0,0,0,0.08)" }}>
+            <div style={{ background: "linear-gradient(160deg, #0f1117, #1e1b4b)", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20, cursor: "pointer", position: "relative" }}>
+              <div style={{ width: 72, height: 72, borderRadius: "50%", background: "rgba(255,255,255,0.12)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>
+                <Play size={28} color="white" style={{ marginLeft: 4 }} />
+              </div>
+              <p style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Watch the 2-minute demo</p>
+              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>See a complete product plan generated in real time</p>
+              <div style={{ position: "absolute", top: 20, left: 20, padding: "6px 12px", background: "rgba(37,99,235,0.3)", border: "1px solid rgba(37,99,235,0.5)", borderRadius: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#93c5fd" }}>LIVE DEMO</span>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FEATURES */}
+      <section id="features" style={{ padding: "100px 24px", background: "#f8fafc" }}>
+        <div style={{ maxWidth: 1160, margin: "0 auto" }}>
+          <motion.div {...fadeUp()} style={{ textAlign: "center", marginBottom: 60 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 14px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 100, marginBottom: 16 }}>
+              <Layers size={12} color="#2563eb" />
+              <span style={{ fontSize: 12, fontWeight: 600, color: "#2563eb" }}>8 AI-generated sections</span>
+            </div>
+            <h2 style={{ fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 800, letterSpacing: "-0.04em", color: "#0f1117", marginBottom: 16 }}>Everything you need to build</h2>
+            <p style={{ fontSize: 17, color: "#6b7280", maxWidth: 480, margin: "0 auto" }}>Each section is crafted by a specialized AI agent — strategist, UX designer, architect, and copywriter.</p>
+          </motion.div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <motion.div key={f.title} {...fadeUp(i * 0.05)} style={{ background: "white", border: "1px solid #e5e7eb", borderRadius: 16, padding: "22px 20px" }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+                    <Icon size={18} color={f.color} />
+                  </div>
+                  <h3 style={{ fontSize: 14.5, fontWeight: 700, color: "#0f1117", marginBottom: 7, letterSpacing: "-0.015em" }}>{f.title}</h3>
+                  <p style={{ fontSize: 13, color: "#6b7280", lineHeight: 1.6 }}>{f.desc}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section style={{ padding: "100px 24px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <motion.div {...fadeUp()} style={{ textAlign: "center", marginBottom: 56 }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 16 }}>
+              {[...Array(5)].map((_, i) => <Star key={i} size={18} color="#f59e0b" fill="#f59e0b" />)}
+            </div>
+            <h2 style={{ fontSize: "clamp(26px, 4vw, 42px)", fontWeight: 800, letterSpacing: "-0.04em", color: "#0f1117" }}>Builders love FORGE AI</h2>
+          </motion.div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {TESTIMONIALS.map((t, i) => (
+              <motion.div key={t.name} {...fadeUp(i * 0.1)} style={{ background: "#f8fafc", border: "1px solid #e5e7eb", borderRadius: 16, padding: "28px 24px" }}>
+                <div style={{ display: "flex", gap: 2, marginBottom: 16 }}>
+                  {[...Array(5)].map((_, j) => <Star key={j} size={13} color="#f59e0b" fill="#f59e0b" />)}
                 </div>
-                <div
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: "var(--forge-text)",
-                    marginBottom: 10,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  {w.title}
-                </div>
-                <p
-                  style={{
-                    fontSize: 14,
-                    color: "var(--forge-text-muted)",
-                    lineHeight: 1.65,
-                  }}
-                >
-                  {w.description}
-                </p>
+                <p style={{ fontSize: 14.5, color: "#374151", lineHeight: 1.7, marginBottom: 20, fontStyle: "italic" }}>"{t.quote}"</p>
+                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#0f1117" }}>{t.name}</p>
+                <p style={{ fontSize: 12, color: "#9ca3af" }}>{t.role}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Build Mode highlight */}
-      <section style={{ padding: "80px 32px", maxWidth: 1200, margin: "0 auto" }}>
-        <div
-          style={{
-            background: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)",
-            borderRadius: 28,
-            padding: "56px 64px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 48,
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{ flex: 1, minWidth: 280 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 7,
-                padding: "5px 13px",
-                background: "rgba(124,58,237,0.2)",
-                border: "1px solid rgba(124,58,237,0.3)",
-                borderRadius: 20,
-                marginBottom: 24,
-              }}
-            >
-              <Code2 size={12} color="#a78bfa" />
-              <span style={{ fontSize: 12, fontWeight: 600, color: "#a78bfa" }}>
-                Build Mode
-              </span>
-            </div>
-            <h2
-              style={{
-                fontSize: "clamp(24px, 3.5vw, 36px)",
-                fontWeight: 800,
-                letterSpacing: "-0.03em",
-                color: "white",
-                marginBottom: 16,
-                lineHeight: 1.15,
-              }}
-            >
-              From plan to implementation — instantly
-            </h2>
-            <p
-              style={{
-                fontSize: 15,
-                color: "rgba(255,255,255,0.6)",
-                marginBottom: 32,
-                lineHeight: 1.65,
-                maxWidth: 460,
-              }}
-            >
-              Build Mode transforms your product plan into engineering artifacts —
-              screens, components, tickets, API endpoints, data schema, and a
-              Claude Code handoff prompt ready for immediate execution.
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 36 }}>
-              {["Dev-ready ticket breakdown", "API endpoint design", "Data model & schema", "Claude Code export prompt"].map(
-                (item) => (
-                  <div
-                    key={item}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                    }}
-                  >
-                    <CheckCircle2 size={16} color="#34d399" />
-                    <span style={{ fontSize: 14, color: "rgba(255,255,255,0.8)" }}>
-                      {item}
-                    </span>
+      {/* PRICING */}
+      <section style={{ padding: "100px 24px", background: "#f8fafc", borderTop: "1px solid #e5e7eb" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <motion.div {...fadeUp()} style={{ textAlign: "center", marginBottom: 56 }}>
+            <h2 style={{ fontSize: "clamp(28px, 5vw, 48px)", fontWeight: 800, letterSpacing: "-0.04em", color: "#0f1117", marginBottom: 12 }}>Simple, honest pricing</h2>
+            <p style={{ fontSize: 17, color: "#6b7280" }}>Start free. Upgrade when you need more.</p>
+          </motion.div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+            {PRICING.map((plan, i) => (
+              <motion.div key={plan.name} {...fadeUp(i * 0.1)} style={{
+                background: plan.highlight ? "linear-gradient(160deg, #1e1b4b, #1e3a8a)" : "white",
+                border: plan.highlight ? "none" : "1px solid #e5e7eb",
+                borderRadius: 20, padding: "32px 28px", position: "relative",
+                boxShadow: plan.highlight ? "0 16px 48px rgba(37,99,235,0.25)" : "none",
+              }}>
+                {(plan as any).badge && (
+                  <div style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", padding: "4px 14px", background: "linear-gradient(135deg, #2563eb, #7c3aed)", borderRadius: 100, fontSize: 11.5, fontWeight: 700, color: "white", whiteSpace: "nowrap" }}>
+                    {(plan as any).badge}
                   </div>
-                )
-              )}
-            </div>
-
-            <Link href="/projects/demo-focusforge/build-mode">
-              <button
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "11px 24px",
-                  background: "white",
-                  color: "#0f172a",
-                  border: "none",
-                  borderRadius: 11,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
-                Explore Build Mode
-                <ChevronRight size={15} />
-              </button>
-            </Link>
-          </div>
-
-          {/* Build mode preview */}
-          <div
-            style={{
-              flex: 1,
-              minWidth: 280,
-              maxWidth: 440,
-            }}
-          >
-            <div
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 20,
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  borderBottom: "1px solid rgba(255,255,255,0.08)",
-                  padding: "14px 18px",
-                  display: "flex",
-                  gap: 6,
-                }}
-              >
-                {["Screens", "Tickets", "APIs", "Schema", "Roadmap"].map(
-                  (tab, i) => (
-                    <div
-                      key={tab}
-                      style={{
-                        padding: "5px 12px",
-                        borderRadius: 7,
-                        fontSize: 12,
-                        fontWeight: 600,
-                        background: i === 1 ? "rgba(124,58,237,0.3)" : "transparent",
-                        color: i === 1 ? "#a78bfa" : "rgba(255,255,255,0.4)",
-                      }}
-                    >
-                      {tab}
-                    </div>
-                  )
                 )}
-              </div>
-              <div style={{ padding: 18 }}>
-                {[
-                  { id: "T-001", title: "Implement user authentication", complexity: "Low", color: "#34d399" },
-                  { id: "T-002", title: "Build onboarding flow", complexity: "Medium", color: "#fbbf24" },
-                  { id: "T-003", title: "Partner matching algorithm", complexity: "High", color: "#f87171" },
-                ].map((ticket) => (
-                  <div
-                    key={ticket.id}
-                    style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      borderRadius: 12,
-                      padding: "12px 14px",
-                      marginBottom: 10,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 3 }}>
-                        {ticket.id}
-                      </div>
-                      <div style={{ fontSize: 13, color: "white", fontWeight: 500 }}>
-                        {ticket.title}
-                      </div>
+                <p style={{ fontSize: 13, fontWeight: 700, color: plan.highlight ? "rgba(255,255,255,0.5)" : "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>{plan.name}</p>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
+                  <span style={{ fontSize: 42, fontWeight: 900, letterSpacing: "-0.04em", color: plan.highlight ? "white" : "#0f1117" }}>{plan.price}</span>
+                  <span style={{ fontSize: 14, color: plan.highlight ? "rgba(255,255,255,0.4)" : "#9ca3af" }}>/{plan.period}</span>
+                </div>
+                <p style={{ fontSize: 13.5, color: plan.highlight ? "rgba(255,255,255,0.55)" : "#6b7280", marginBottom: 24 }}>{plan.desc}</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+                  {plan.features.map(f => (
+                    <div key={f} style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                      <CheckCircle2 size={14} color={plan.highlight ? "#60a5fa" : "#059669"} />
+                      <span style={{ fontSize: 13.5, color: plan.highlight ? "rgba(255,255,255,0.8)" : "#374151" }}>{f}</span>
                     </div>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: ticket.color,
-                        background: `${ticket.color}18`,
-                        padding: "3px 9px",
-                        borderRadius: 20,
-                      }}
-                    >
-                      {ticket.complexity}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+                <Link href={plan.href} style={{
+                  display: "block", textAlign: "center", padding: "11px 0", borderRadius: 10,
+                  fontSize: 14, fontWeight: 700, textDecoration: "none",
+                  background: plan.highlight ? "linear-gradient(135deg, #3b82f6, #8b5cf6)" : "white",
+                  color: plan.highlight ? "white" : "#0f1117",
+                  border: plan.highlight ? "none" : "1.5px solid #e5e7eb",
+                  boxShadow: plan.highlight ? "0 4px 16px rgba(59,130,246,0.4)" : "none",
+                }}>{plan.cta}</Link>
+              </motion.div>
+            ))}
           </div>
+          <p style={{ textAlign: "center", fontSize: 13, color: "#9ca3af", marginTop: 24 }}>
+            All plans include access to Gemini AI generation.{" "}
+            <Link href="/pricing" style={{ color: "#2563eb", textDecoration: "none" }}>See full pricing details →</Link>
+          </p>
         </div>
       </section>
 
-      {/* CTA */}
-      <section
-        style={{
-          padding: "80px 32px 100px",
-          textAlign: "center",
-          background: "white",
-          borderTop: "1px solid var(--forge-border)",
-        }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2
-            style={{
-              fontSize: "clamp(28px, 4vw, 44px)",
-              fontWeight: 800,
-              letterSpacing: "-0.035em",
-              color: "var(--forge-text)",
-              marginBottom: 16,
-            }}
-          >
-            Ready to forge your product?
+      {/* FINAL CTA */}
+      <section style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(160deg, #0f1117 0%, #1e1b4b 60%, #1e3a8a 100%)" }}>
+        <motion.div {...fadeUp()}>
+          <h2 style={{ fontSize: "clamp(30px, 6vw, 60px)", fontWeight: 900, color: "white", letterSpacing: "-0.045em", lineHeight: 1.1, marginBottom: 20, maxWidth: 720, margin: "0 auto 20px" }}>
+            Your next product starts with one sentence
           </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--forge-text-muted)",
-              marginBottom: 40,
-              maxWidth: 460,
-              margin: "0 auto 40px",
-              lineHeight: 1.6,
-            }}
-          >
-            Start with a rough idea. Leave with a structured plan you can actually build.
-          </p>
-          <Link href="/projects/new">
-            <button
-              className="forge-btn-primary"
-              style={{ padding: "14px 32px", fontSize: 16, fontWeight: 700 }}
-            >
-              Start Building — It's Free
-              <ArrowRight size={16} />
-            </button>
+          <p style={{ fontSize: 18, color: "rgba(255,255,255,0.55)", marginBottom: 40 }}>No planning paralysis. No blank pages. Just build.</p>
+          <Link href="/projects/new" style={{
+            display: "inline-flex", alignItems: "center", gap: 10,
+            padding: "16px 40px", borderRadius: 14, fontSize: 17, fontWeight: 800,
+            textDecoration: "none", color: "white",
+            background: "linear-gradient(135deg, #2563eb, #7c3aed)",
+            boxShadow: "0 6px 32px rgba(37,99,235,0.45)",
+          }}>
+            <Sparkles size={18} />
+            Start building — it&apos;s free
+            <ArrowRight size={16} />
           </Link>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.25)", marginTop: 18 }}>No credit card · 3 projects free · Upgrade anytime</p>
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer
-        style={{
-          padding: "32px",
-          borderTop: "1px solid var(--forge-border)",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            marginBottom: 8,
-          }}
-        >
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              background: "var(--forge-blue)",
-              borderRadius: 6,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Sparkles size={11} color="white" />
-          </div>
-          <span
-            style={{ fontSize: 14, fontWeight: 700, color: "var(--forge-text)" }}
-          >
-            FORGE AI
-          </span>
-        </div>
-        <p style={{ fontSize: 13, color: "#9ca3af" }}>
-          Turn ideas into buildable products.
-        </p>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 import { z } from "zod";
 
 const createSchema = z.object({
+  id: z.string().optional(),
   title: z.string().optional(),
   rawIdea: z.string().min(1),
   targetUser: z.string().optional(),
@@ -29,18 +30,24 @@ export async function POST(req: NextRequest) {
       data.title?.trim() ||
       data.rawIdea.split(" ").slice(0, 5).join(" ");
 
-    const project = await prisma.project.create({
-      data: {
-        title,
-        rawIdea: data.rawIdea,
-        targetUser: data.targetUser,
-        preferredPlatform: data.preferredPlatform,
-        goal: data.goal,
-        skillLevel: data.skillLevel,
-        preferredStack: data.preferredStack,
-        brandTone: data.brandTone,
-      },
-    });
+    const projectData = {
+      title,
+      rawIdea: data.rawIdea,
+      targetUser: data.targetUser,
+      preferredPlatform: data.preferredPlatform,
+      goal: data.goal,
+      skillLevel: data.skillLevel,
+      preferredStack: data.preferredStack,
+      brandTone: data.brandTone,
+    };
+
+    const project = data.id
+      ? await prisma.project.upsert({
+          where: { id: data.id },
+          create: { id: data.id, ...projectData },
+          update: {},
+        })
+      : await prisma.project.create({ data: projectData });
 
     return NextResponse.json({ project }, { status: 201 });
   } catch (err) {

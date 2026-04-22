@@ -99,14 +99,13 @@ export function WorkspaceTopbar({
           </button>
         )}
 
-        <Link href={`/projects/${projectId}/build-mode`}>
-          <button
-            className="forge-btn-secondary"
-            style={{ padding: "6px 14px", fontSize: 13, gap: 6, color: "#7c3aed", borderColor: "#ede9fe" }}
-          >
-            <Hammer size={13} />
-            Build Mode
-          </button>
+        <Link
+          href={`/projects/${projectId}/build-mode`}
+          className="forge-btn-secondary"
+          style={{ padding: "6px 14px", fontSize: 13, gap: 6, color: "#7c3aed", borderColor: "#ede9fe" }}
+        >
+          <Hammer size={13} />
+          Build Mode
         </Link>
 
         {onExport && (

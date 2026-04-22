@@ -85,6 +85,6 @@ export const useProjectStore = create<ProjectStore>()(
       setSectionStatus: (projectId, sectionType, status) =>
         get().updateSection(projectId, sectionType, { status }),
     }),
-    { name: "forge-ai-store" }
+    { name: "forge-ai-store", skipHydration: true }
   )
 );

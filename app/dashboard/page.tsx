@@ -202,11 +202,12 @@ export default function DashboardPage() {
 
         <div style={{ flex: 1 }} />
 
-        <Link href="/projects/new">
-          <button className="forge-btn-primary" style={{ padding: "7px 16px", fontSize: 13 }}>
-            <Plus size={14} />
-            New Project
-          </button>
+        <Link href="/settings" style={{ padding: "7px 14px", borderRadius: 8, fontSize: 13, fontWeight: 500, color: "var(--forge-text-muted)", textDecoration: "none", border: "1px solid var(--forge-border)", background: "white", display: "inline-flex", alignItems: "center", gap: 6 }}>
+          Settings
+        </Link>
+        <Link href="/projects/new" className="forge-btn-primary" style={{ padding: "7px 16px", fontSize: 13 }}>
+          <Plus size={14} />
+          New Project
         </Link>
       </nav>
 
@@ -268,11 +269,9 @@ export default function DashboardPage() {
               Start with a product idea — FORGE AI will turn it into a complete, structured product plan.
             </p>
             <div style={{ marginBottom: 40 }}>
-              <Link href="/projects/new">
-                <button className="forge-btn-primary" style={{ padding: "12px 28px", fontSize: 15 }}>
-                  Create Your First Project
-                  <ArrowRight size={15} />
-                </button>
+              <Link href="/projects/new" className="forge-btn-primary" style={{ padding: "12px 28px", fontSize: 15 }}>
+                Create Your First Project
+                <ArrowRight size={15} />
               </Link>
             </div>
             <div style={{ fontSize: 13, color: "#9ca3af", marginBottom: 16 }}>Try one of these prompts:</div>
