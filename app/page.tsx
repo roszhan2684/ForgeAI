@@ -202,16 +202,18 @@ export default function LandingPage() {
 
           {/* Demo video */}
           <motion.div {...fadeUp(0.1)} style={{ borderRadius: 20, overflow: "hidden", border: "1px solid #e5e7eb", boxShadow: "0 8px 40px rgba(0,0,0,0.08)" }}>
-            <div style={{ background: "linear-gradient(160deg, #0f1117, #1e1b4b)", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20, cursor: "pointer", position: "relative" }}>
-              <div style={{ width: 72, height: 72, borderRadius: "50%", background: "rgba(255,255,255,0.12)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>
-                <Play size={28} color="white" style={{ marginLeft: 4 }} />
+            <Link href="/demo" style={{ display: "block", textDecoration: "none" }}>
+              <div style={{ background: "linear-gradient(160deg, #0f1117, #1e1b4b)", aspectRatio: "16/9", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: 20, cursor: "pointer", position: "relative" }}>
+                <div style={{ width: 72, height: 72, borderRadius: "50%", background: "rgba(255,255,255,0.12)", border: "2px solid rgba(255,255,255,0.25)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(8px)" }}>
+                  <Play size={28} color="white" style={{ marginLeft: 4 }} />
+                </div>
+                <p style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Watch the 2-minute demo</p>
+                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>AI-narrated walkthrough with live product animations</p>
+                <div style={{ position: "absolute", top: 20, left: 20, padding: "6px 12px", background: "rgba(37,99,235,0.3)", border: "1px solid rgba(37,99,235,0.5)", borderRadius: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#93c5fd" }}>INTERACTIVE DEMO</span>
+                </div>
               </div>
-              <p style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Watch the 2-minute demo</p>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>See a complete product plan generated in real time</p>
-              <div style={{ position: "absolute", top: 20, left: 20, padding: "6px 12px", background: "rgba(37,99,235,0.3)", border: "1px solid rgba(37,99,235,0.5)", borderRadius: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#93c5fd" }}>LIVE DEMO</span>
-              </div>
-            </div>
+            </Link>
           </motion.div>
         </div>
       </section>
